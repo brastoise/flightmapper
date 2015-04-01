@@ -131,6 +131,16 @@ public class HashMap<Key,Val> {
         return queue;
     }
 
+    public Iterable<Val> values() {
+        Queue<Val> queue = new Queue<Val>();
+        for (int i = 0; i < M; i++) {
+            if (vals[i] != null) {
+                queue.enqueue(vals[i]);
+            }
+        }
+        return queue;
+    }
+
     private boolean check() {
         if (M < 2*N) {
             System.err.println("Hash table size M = " + M + "; array size N = " + N);
