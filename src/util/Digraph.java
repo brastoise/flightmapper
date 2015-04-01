@@ -66,5 +66,18 @@ public class Digraph {
         return R.adj[v].size();
     }
 
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        String NEWLINE = System.getProperty("line.separator");
+        s.append(V + "vertices, " + E + " edges " + NEWLINE);
+        for (int v = 0; v < V; v++) {
+            s.append(String.format("%d, ", v));
+            for (int w : adj[v]) {
+                s.append(String.format("%d ", w));
+            }
+            s.append(NEWLINE);
+        }
+        return s.toString();
+    }
 
 }
