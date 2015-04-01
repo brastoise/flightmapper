@@ -23,6 +23,50 @@ public class ReadCSV {
     }
 
     /**
+     * Reads a specific line in the file
+     * @param lineNumber - Line number to read
+     * @return - String of selected line
+     */
+    public String readLine(int lineNumber) {
+        BufferedReader br = null;
+        String line = "";
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            for (int i = 0; i < lineNumber; i++) {
+                br.readLine();
+            }
+
+            line = br.readLine();
+        } catch (IOException e) {
+
+        }
+        return line;
+    }
+
+    /**
+     * Returns a range of lines
+     * @param lo - the lower bound
+     * @param hi - the upper bound
+     * @return - String array of lines in range
+     */
+    public String[] readRange(int lo, int hi) {
+        BufferedReader br = null;
+        String[] output = new String[hi-lo];
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            for (int i = 0; i < lo; i++) {
+                br.readLine();
+            }
+            for (int i = lo; i < hi; i++) {
+                output[i] = br.readLine();
+            }
+        } catch (IOException e) {
+
+        }
+        return output;
+    }
+
+    /**
      * Parses the CSV and stores it into a HashMap, using one column as a Key, and another as a Value
      * @param colKey - Column to be used as Key
      * @param colVal - Column to be used as Value
