@@ -48,8 +48,22 @@ public class HashMap<Key,Val> {
         return null;
     }
 
+    public Key getKey(Val val) {
+        Iterable<Key> list = keys();
+        for (Key k : list) {
+            if (get(k).equals(val)) {
+                return k;
+            }
+        }
+        return null;
+    }
+
     public boolean containsKey(Key key) {
         return get(key) != null;
+    }
+
+    public boolean containsVal(Val val) {
+        return getKey(val) != null;
     }
 
     public void put(Key key, Val val) {
@@ -134,6 +148,11 @@ public class HashMap<Key,Val> {
         return true;
     }
 
-
+    public static void main(String[] args) {
+        HashMap<Integer, String> test = new HashMap<Integer, String>(10);
+        test.put(0, "a");
+        test.put(1, "b");
+        System.out.println(test.containsVal("z"));
+    }
 
 }
