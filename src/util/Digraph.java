@@ -3,8 +3,8 @@ package util;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 public class Digraph {
-    private final int V;
-    private int E;
+    private final int V; // Number of vertices
+    private int E; // Number of edges
     private Bag<Integer>[] adj;
 
     public Digraph(int V) {

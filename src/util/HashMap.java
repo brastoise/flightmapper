@@ -13,6 +13,8 @@ public class HashMap<Key,Val> {
         vals = (Val[]) new Object[M];
     }
 
+
+
     public int size() {
         return M;
     }
