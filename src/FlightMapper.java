@@ -1,6 +1,5 @@
-import util.Digraph;
-import util.HashMap;
-import util.ReadCSV;
+import map.Reachable;
+import util.*;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,71 @@ public class FlightMapper {
     }
 
     public static void map() {
-        println("Map!");
+        mapIntro();
+        mapMenu();
+        int returnCode = -1;
+        while(returnCode != 0) {
+            mapMenu();
+            returnCode = mapInput();
+        }
+    }
+
+    public static void mapIntro() {
+        println("Mapping");
+    }
+
+    public static void mapMenu() {
+        println("Select an option:");
+        println("1. Departures");
+        println("2. Arrivals");
+        println("3. Shortest Path");
+        println("4. Connectivity");
+        println("5. Return");
+        println();
+    }
+
+    public static int mapInput() {
+        print("Input: ");
+        String inputSelection = readString();
+        switch(inputSelection.charAt(0)) {
+            case '1':
+                mapDepartures();
+                return 1;
+            case '2':
+                // TODO
+                return 1;
+            case '3':
+                // TODO
+                return 1;
+            case '4':
+                // TODO
+                return 1;
+            case '5':
+                return 0;
+            default:
+                println("Input mismatch");
+                return -1;
+        }
+    }
+
+    public static void mapDepartures() {
+        print("Input Airport: ");
+        String inputAirport = readString();
+        if (inputAirport.length() == 3) {
+            String airportCode = inputAirport;
+            int airportID = HM_idAirport.getKey(airportCode);
+            Bag<Integer> source = new Bag<Integer>();
+            source.add(airportID);
+            Reachable search = new Reachable(network, source);
+            for (int v = 0; v < network.V(); v++) {
+                if (search.marked(v)) {
+                    print(HM_idAirport.get(v) + " ");
+                }
+            }
+            println();
+        } else {
+            println("Input mismatch");
+        }
     }
 
     // Interface code
@@ -75,10 +138,12 @@ public class FlightMapper {
     }
 
     public static void exit() {
+        println();
         println("Thank you for using Flight Mapper");
     }
 
     public static void main(String[] args) {
+        init();
         intro();
         int returnCode = -1;
         while(returnCode != 1) {
