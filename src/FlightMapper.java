@@ -4,6 +4,8 @@ import util.ReadCSV;
 
 import java.util.ArrayList;
 
+import static util.StdOut.*;
+
 public class FlightMapper {
     private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
     private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(100);
@@ -31,6 +33,11 @@ public class FlightMapper {
     }
 
     public static void main(String[] args) {
-
+        println("Welcome to Flight Mapper");
+        println();
+        println("Select an option:");
+        println("1. Search");
+        println("2. Map Network");
+        println();
     }
 }
