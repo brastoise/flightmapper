@@ -5,6 +5,7 @@ import util.ReadCSV;
 import java.util.ArrayList;
 
 import static util.StdOut.*;
+import static util.StdIn.*;
 
 public class FlightMapper {
     private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
@@ -32,12 +33,59 @@ public class FlightMapper {
         }
     }
 
-    public static void main(String[] args) {
+    public static void search() {
+        println("Search!");
+    }
+
+    public static void map() {
+        println("Map!");
+    }
+
+    // Interface code
+
+    public static int menuInput() {
+        print("Input: ");
+        String inputSelection = readString();
+        switch(inputSelection.charAt(0)) {
+            case '1':
+                search();
+                return 0;
+            case '2':
+                map();
+                return 0;
+            case '3':
+                return 1;
+            default:
+                println("Input mismatch");
+                return -1;
+        }
+    }
+
+    public static void intro() {
         println("Welcome to Flight Mapper");
         println();
+    }
+
+    public static void printMenu() {
         println("Select an option:");
         println("1. Search");
         println("2. Map Network");
+        println("3. Exit");
         println();
+    }
+
+    public static void exit() {
+        println("Thank you for using Flight Mapper");
+    }
+
+    public static void main(String[] args) {
+        intro();
+        int returnCode = -1;
+        while(returnCode != 1) {
+            printMenu();
+            returnCode = menuInput();
+        }
+        exit();
+
     }
 }
