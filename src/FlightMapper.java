@@ -1,8 +1,10 @@
+import util.Digraph;
 import util.HashMap;
 import util.ReadCSV;
-import util.Digraph;
+
 import java.util.ArrayList;
-public class Network {
+
+public class FlightMapper {
     private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
     private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(100);
     private static Digraph network;
@@ -29,14 +31,6 @@ public class Network {
     }
 
     public static void main(String[] args) {
-        init();
-        for (String s : HM_idAirport.values()) {
-            System.out.println(s);
-        }
 
-        System.out.println(network.toString());
-        System.out.println(HM_idAirport.get(0));
-        System.out.println(HM_idAirport.get(178));
     }
-
 }
