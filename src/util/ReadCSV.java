@@ -121,4 +121,37 @@ public class ReadCSV {
         }
         return result;
     }
+
+    public static ArrayList<Tuple<String, String>> parseTuple(int colKey, int colVal) {
+        BufferedReader br = null;
+        String line = "";
+        ArrayList<Tuple<String,String>> result = new ArrayList<Tuple<String,String>>();
+
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            br.readLine(); // This is to skip the first line which is just a description
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"); // Regex to split the values
+
+                try {
+                    result.add(new Tuple(values[colKey], values[colVal]));
+                } catch (ArrayIndexOutOfBoundsException e) {
+
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("IOException occurred");
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+
+                }
+            }
+        }
+        return result;
+    }
 }
