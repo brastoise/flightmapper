@@ -4,18 +4,19 @@ package util;
 public class HashMap<Key,Val> {
     private int N; // Number of Key-Value pairs
     private int M; // Size of HashMap
-    private SymbolTable<Key,Val>[] st; // Array of linked-list symbol tables
+    private Key[] keys;
+    private Val[] vals;
 
     public HashMap(int M) {
         this.M = M;
-        st = (SymbolTable<Key,Val>[]) new SymbolTable[M];
-        for (int i = 0; i < M; i++) {
-            st[i] = new SymbolTable<Key,Val>();
-        }
+        keys = (Key[]) new Object[M];
+        vals = (Val[]) new Object[M];
     }
 
+
+
     public int size() {
-        return N;
+        return M;
     }
 
     public boolean isEmpty() {
@@ -26,21 +27,25 @@ public class HashMap<Key,Val> {
         return (key.hashCode() & 0x7fffffff) % M;
     }
 
-    public void resize(int chains) {
-        HashMap<Key, Val> temp = new HashMap<Key, Val>(chains);
+    public void resize(int newM) {
+        HashMap<Key, Val> temp = new HashMap<Key, Val>(newM);
         for (int i = 0; i < M; i++) {
-            for (Key key : st[i].keys()) {
-                temp.put(key, st[i].get(key));
+            if (keys[i] != null) {
+                temp.put(keys[i], vals[i]);
             }
         }
-        this.M = temp.M;
-        this.N = temp.N;
-        this.st = temp.st;
+        keys = temp.keys;
+        vals = temp.vals;
+        M = temp.M;
     }
 
     public Val get(Key key) {
-        int i = hash(key);
-        return st[i].get(key);
+        for (int i = hash(key); keys[i] != null; i = (i + 1) % M) {
+            if (keys[i].equals(key)) {
+                return vals[i];
+            }
+        }
+        return null;
     }
 
     public Key getKey(Val val) {
@@ -67,65 +72,91 @@ public class HashMap<Key,Val> {
             return;
         }
 
-        if (N >= 10*M) {
+        if (N >= M/2) {
             resize(2*M);
         }
 
-        int i = hash(key);
-        if (!st[i].contains(key)) {
-            N++;
+        int i;
+        for (i = hash(key); keys[i] != null; i = (i + 1) % M) {
+            if (keys[i].equals(key)) {
+                vals[i] = val;
+                return;
+            }
         }
-        st[i].put(key,val);
+        keys[i] = key;
+        vals[i] = val;
+        N++;
     }
 
     public void delete(Key key) {
-        int i = hash(key);
-        if (st[i].contains(key)) {
-            N--;
+        if (!containsKey(key)) {
+            return;
         }
-        st[i].delete(key);
 
-        if (M > 10 && N <= 2*M) {
+        int i = hash(key);
+        while (!key.equals(keys[i])) {
+            i = (i + 1) % M;
+        }
+
+        keys[i] = null;
+        vals[i] = null;
+
+        i = (i + 1) % M;
+        while (keys[i] != null) {
+            Key rehashKey = keys[i];
+            Val rehashVal = vals[i];
+            keys[i] = null;
+            vals[i] = null;
+            N--;
+            put(rehashKey, rehashVal);
+            i = (i + 1) % M;
+        }
+
+        N--;
+
+        if (N > 0 && N <= M/8) {
             resize(M/2);
         }
+
+        assert check();
     }
 
     public Iterable<Key> keys() {
         Queue<Key> queue = new Queue<Key>();
         for (int i = 0; i < M; i++) {
-            for (Key key : st[i].keys()) {
-                queue.enqueue(key);
+            if (keys[i] != null) {
+                queue.enqueue(keys[i]);
             }
         }
         return queue;
     }
 
-//    public Iterable<Val> values() {
-//        Queue<Val> queue = new Queue<Val>();
-//        for (int i = 0; i < M; i++) {
-//            if (vals[i] != null) {
-//                queue.enqueue(vals[i]);
-//            }
-//        }
-//        return queue;
-//    }
+    public Iterable<Val> values() {
+        Queue<Val> queue = new Queue<Val>();
+        for (int i = 0; i < M; i++) {
+            if (vals[i] != null) {
+                queue.enqueue(vals[i]);
+            }
+        }
+        return queue;
+    }
 
-//    private boolean check() {
-//        if (M < 2*N) {
-//            System.err.println("Hash table size M = " + M + "; array size N = " + N);
-//            return false;
-//        }
-//
-//        for (int i = 0; i < M; i++) {
-//            if (keys[i] == null) {
-//                continue;
-//            } else if (get(keys[i]) != vals[i]) {
-//                System.err.println("get[" + keys[i] + "] = " + get(keys[i]) + "; vals[i] = " + vals[i]);
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    private boolean check() {
+        if (M < 2*N) {
+            System.err.println("Hash table size M = " + M + "; array size N = " + N);
+            return false;
+        }
+
+        for (int i = 0; i < M; i++) {
+            if (keys[i] == null) {
+                continue;
+            } else if (get(keys[i]) != vals[i]) {
+                System.err.println("get[" + keys[i] + "] = " + get(keys[i]) + "; vals[i] = " + vals[i]);
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void main(String[] args) {
         HashMap<Integer, String> test = new HashMap<Integer, String>(10);
