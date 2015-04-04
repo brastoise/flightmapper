@@ -10,8 +10,10 @@ public class FlightMapper {
     //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
     private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
     private static HashMap<Integer, String> idAirport = new HashMap<Integer, String>(100);
-    static ArrayList<Airport> airports = new ArrayList<Airport>();
+    private static ArrayList<Airport> airports = new ArrayList<Airport>();
+    private static ArrayList<Flight> flights = new ArrayList<Flight>();
     private static Digraph network;
+    private static EdgeWeightedDigraph distanceNetwork;
 
     public static void init() {
         // Creates a list of airports
@@ -45,6 +47,11 @@ public class FlightMapper {
             airports.add(new Airport(i, idAirport.get(i)));
         }
 
+        // Prepare a database of flights
+        for (int i = 1; i < 10; i++) {
+            flights.add(new Flight(input.readLine(i)));
+        }
+
         // Create a list of connections
         ArrayList<Tuple<String,String>> connections = input.parseTuple(0, 1);
         network = new Digraph(idAirport.size());
@@ -52,6 +59,12 @@ public class FlightMapper {
             network.addEdge(idAirport.getKey(t.x), idAirport.getKey(t.y)); // Adds a flight connection
             airports.get(idAirport.getKey(t.x)).addDeparture(t.y); // Adds to the list of places the airport can fly to
             airports.get(idAirport.getKey(t.y)).addArrival(t.x); // Adds to the list of places that travel to this airport
+        }
+
+        // Create a network with distances
+        distanceNetwork = new EdgeWeightedDigraph(idAirport.size());
+        for (Tuple<String,String> t : connections) {
+            // TODO
         }
     }
 
