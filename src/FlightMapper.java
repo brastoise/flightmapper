@@ -9,7 +9,8 @@ import static util.StdIn.*;
 public class FlightMapper {
     //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
     private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
-    private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(100);
+    private static HashMap<Integer, String> idAirport = new HashMap<Integer, String>(100);
+    static ArrayList<Airport> airports = new ArrayList<Airport>();
     private static Digraph network;
 
     public static void init() {
@@ -24,40 +25,33 @@ public class FlightMapper {
         // Check departure airports
         for (String s : departures) {
             if (!seen.contains(s)) {
-                HM_idAirport.put(counter, s);
+                idAirport.put(counter, s);
                 seen.add(s);
                 counter++;
             }
         }
-//        println(HM_idAirport.keys());
-//        println(HM_idAirport.values());
 
         // Check arrival airports
         for (String s : arrivals) {
             if (!seen.contains(s)) {
-                HM_idAirport.put(counter, s);
+                idAirport.put(counter, s);
                 seen.add(s);
                 counter++;
             }
         }
 
-        println(HM_idAirport.keys());
-        println(HM_idAirport.values());
+        // Prepare a database of airports
+        for (Integer i : idAirport.keys()) {
+            airports.add(new Airport(i, idAirport.get(i)));
+        }
 
         // Create a list of connections
         ArrayList<Tuple<String,String>> connections = input.parseTuple(0, 1);
-        ArrayList<Airport> airports = new ArrayList<Airport>();
-        // println(connections.keys());
-
-        for (Integer i : HM_idAirport.keys()) {
-            airports.add(new Airport(i, HM_idAirport.get(i)));
-        }
-
-        println(airports);
-
-        network = new Digraph(HM_idAirport.size());
+        network = new Digraph(idAirport.size());
         for (Tuple<String,String> t : connections) {
-            network.addEdge(HM_idAirport.getKey(t.x), HM_idAirport.getKey(t.y));
+            network.addEdge(idAirport.getKey(t.x), idAirport.getKey(t.y)); // Adds a flight connection
+            airports.get(idAirport.getKey(t.x)).addDeparture(t.y); // Adds to the list of places the airport can fly to
+            airports.get(idAirport.getKey(t.y)).addArrival(t.x); // Adds to the list of places that travel to this airport
         }
     }
 
@@ -97,7 +91,7 @@ public class FlightMapper {
                 mapDepartures();
                 return 1;
             case '2':
-                // TODO
+                mapArrivals();
                 return 1;
             case '3':
                 // TODO
@@ -118,14 +112,30 @@ public class FlightMapper {
         String inputAirport = readString();
         if (inputAirport.length() == 3) {
             String airportCode = inputAirport;
-            int airportID = HM_idAirport.getKey(airportCode);
+            int airportID = idAirport.getKey(airportCode);
             Bag<Integer> source = new Bag<Integer>();
             source.add(airportID);
             Reachable search = new Reachable(network, source);
             for (int v = 0; v < network.V(); v++) {
                 if (search.marked(v)) {
-                    print(HM_idAirport.get(v) + " ");
+                    print(idAirport.get(v) + " ");
                 }
+            }
+            println();
+        } else {
+            println("Input mismatch");
+        }
+    }
+
+    public static void mapArrivals() {
+        print("Input Airport: ");
+        String inputAirport = readString();
+        if (inputAirport.length() == 3) {
+            String airportCode = inputAirport;
+            int airportID = idAirport.getKey(airportCode);
+            ArrayList<String> arrivals = airports.get(airportID).getArrivals();
+            for (String s : arrivals) {
+                println(s);
             }
             println();
         } else {

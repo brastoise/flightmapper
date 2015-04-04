@@ -22,8 +22,11 @@ public class Airport {
         return name;
     }
 
+    public ArrayList<String> getArrivals() {
+        return arrivals;
+    }
 
-    public ArrayList<String> getConnections() {
+    public ArrayList<String> getDepartures() {
         return departures;
     }
 
