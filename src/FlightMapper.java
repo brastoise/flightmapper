@@ -7,17 +7,33 @@ import static util.StdOut.*;
 import static util.StdIn.*;
 
 public class FlightMapper {
-    private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
-    // private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
-    private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(10);
+    //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
+    private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
+    private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(100);
     private static Digraph network;
 
     public static void init() {
         // Creates a list of airports
-        ArrayList<String> airports = input.readColumn(0);
+        ArrayList<String> departures = input.readColumn(0);
+        println(departures);
+        ArrayList<String> arrivals = input.readColumn(1);
+        println(arrivals);
         ArrayList<String> seen = new ArrayList<String>();
         int counter = 0;
-        for (String s : airports) {
+
+        // Check departure airports
+        for (String s : departures) {
+            if (!seen.contains(s)) {
+                HM_idAirport.put(counter, s);
+                seen.add(s);
+                counter++;
+            }
+        }
+//        println(HM_idAirport.keys());
+//        println(HM_idAirport.values());
+
+        // Check arrival airports
+        for (String s : arrivals) {
             if (!seen.contains(s)) {
                 HM_idAirport.put(counter, s);
                 seen.add(s);
@@ -25,11 +41,23 @@ public class FlightMapper {
             }
         }
 
+        println(HM_idAirport.keys());
+        println(HM_idAirport.values());
+
         // Create a list of connections
-        HashMap<String, String> connections = input.parse(0, 1);
+        ArrayList<Tuple<String,String>> connections = input.parseTuple(0, 1);
+        ArrayList<Airport> airports = new ArrayList<Airport>();
+        // println(connections.keys());
+
+        for (Integer i : HM_idAirport.keys()) {
+            airports.add(new Airport(i, HM_idAirport.get(i)));
+        }
+
+        println(airports);
+
         network = new Digraph(HM_idAirport.size());
-        for (String s : connections.keys()) {
-            network.addEdge(HM_idAirport.getKey(s), HM_idAirport.getKey(connections.get(s)));
+        for (Tuple<String,String> t : connections) {
+            network.addEdge(HM_idAirport.getKey(t.x), HM_idAirport.getKey(t.y));
         }
     }
 
