@@ -8,7 +8,8 @@ import static util.StdIn.*;
 
 public class FlightMapper {
     private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
-    private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(100);
+    // private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
+    private static HashMap<Integer, String> HM_idAirport = new HashMap<Integer, String>(10);
     private static Digraph network;
 
     public static void init() {
