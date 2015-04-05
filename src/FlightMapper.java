@@ -69,8 +69,73 @@ public class FlightMapper {
     }
 
     public static void search() {
-        println("Search!");
+        searchIntro();
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        print("Departure: ");
+        String inputDep = readString();
+        if (inputDep.length() != 3) {
+            println("Input mismatch");
+            return;
+        } else {
+            results = searchDep(inputDep);
+            print("Arrival: ");
+            String inputArv = readString();
+            if (inputArv.length() != 3) {
+                println("Input mismatch");
+                return;
+            } else {
+                results = searchArv(results, inputArv);
+                print("Narrow Search? (Y/N): ");
+                String inputNarrow = readString();
+                switch(inputNarrow.charAt(0)) {
+                    case 'Y':
+                        searchMore(results);
+                        break;
+                    case 'N':
+                        sort(results);
+                        break;
+                    default:
+                        println("Input mismatch");
+                        break;
+                }
+            }
+        }
+
     }
+
+    private static void searchMore(ArrayList<Flight> results) {
+
+    }
+
+    private static void sort(ArrayList<Flight> results) {
+
+    }
+
+    private static ArrayList<Flight> searchDep(String key) {
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        for (Flight f : flights) {
+            if (f.getSource().equals(key)) {
+                results.add(f);
+            }
+        }
+        return results;
+    }
+
+    private static ArrayList<Flight> searchArv(ArrayList<Flight> oldResults, String key) {
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        for (Flight f : oldResults) {
+            if (f.getDest().equals(key)) {
+                results.add(f);
+            }
+        }
+        return results;
+    }
+
+    public static void searchIntro() {
+        println("Search");
+    }
+
+    // Mapping Code
 
     public static void map() {
         mapIntro();
