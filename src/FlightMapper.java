@@ -1,6 +1,6 @@
 import map.Reachable;
 import util.*;
-
+import java.util.Collections;
 import java.util.ArrayList;
 
 import static util.StdOut.*;
@@ -8,7 +8,7 @@ import static util.StdIn.*;
 
 public class FlightMapper {
     //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
-    private static ReadCSV input = new ReadCSV("data/AirCanada.csv");
+    private static ReadCSV input = new ReadCSV("data/Canada.csv");
     private static HashMap<Integer, String> idAirport = new HashMap<Integer, String>(100);
     private static ArrayList<Airport> airports = new ArrayList<Airport>();
     private static ArrayList<Flight> flights = new ArrayList<Flight>();
@@ -18,9 +18,9 @@ public class FlightMapper {
     public static void init() {
         // Creates a list of airports
         ArrayList<String> departures = input.readColumn(0);
-        println(departures);
+        //println(departures);
         ArrayList<String> arrivals = input.readColumn(1);
-        println(arrivals);
+        //println(arrivals);
         ArrayList<String> seen = new ArrayList<String>();
         int counter = 0;
 
@@ -103,12 +103,91 @@ public class FlightMapper {
 
     }
 
-    private static void searchMore(ArrayList<Flight> results) {
-
+    private static void searchMore(ArrayList<Flight> oldResults) {
+        ArrayList<Flight> results = oldResults;
+        int returnCode = -1;
+        while (returnCode != 0) {
+            println("Search method: ");
+            println("1. Airline");
+            println("2. Plane");
+            println("3. Done");
+            print("Input: ");
+            String inputSearchMore = readString();
+            switch(inputSearchMore.charAt(0)) {
+                case '1':
+                    print("Enter 2-letter code: ");
+                    String inputAirline = readString();
+                    results = searchAirline(results, inputAirline);
+                    break;
+                case '2':
+                    print("Enter plane code: ");
+                    String inputPlane = readString();
+                    results = searchPlane(results, inputPlane);
+                    break;
+                case '3':
+                    returnCode = 0;
+                    break;
+                default:
+                    println("Input mismatch");
+                    break;
+            }
+        }
+        sort(results);
     }
 
-    private static void sort(ArrayList<Flight> results) {
+    private static ArrayList<Flight> searchAirline(ArrayList<Flight> oldResults, String key) {
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        for (Flight f : oldResults) {
+            if (f.getCarrier().equals(key)) {
+                results.add(f);
+            }
+        }
+        println(results.size() + " results found");
+        return results;
+    }
 
+    private static ArrayList<Flight> searchPlane(ArrayList<Flight> oldResults, String key) {
+        ArrayList<Flight> results = new ArrayList<Flight>();
+        for (Flight f : oldResults) {
+            if (f.getPlane().equals(key)) {
+                results.add(f);
+            }
+        }
+        println(results.size() + " results found");
+        return results;
+    }
+
+    private static void sort(ArrayList<Flight> oldResults) {
+        ArrayList<Flight> results = oldResults;
+        int returnCode = -1;
+        while (returnCode != 0) {
+            println("Sort by: ");
+            println("1. Departure Time");
+            println("2. Arrival Time");
+            println("3. Distance");
+            print("Input: ");
+            String inputSort = readString();
+            switch(inputSort.charAt(0)) {
+                case '1':
+                    Collections.sort(results, new Flight.LeaveComparator());
+                    returnCode = 0;
+                    break;
+                case '2':
+                    Collections.sort(results, new Flight.ArriveComparator());
+                    returnCode = 0;
+                    break;
+                case '3':
+                    Collections.sort(results, new Flight.MilesComparator());
+                    returnCode = 0;
+                    break;
+                default:
+                    println("Input mismatch");
+                    break;
+            }
+        }
+        for (Flight f : results) {
+            println(f.toString());
+        }
     }
 
     private static ArrayList<Flight> searchDep(String key) {
@@ -118,6 +197,7 @@ public class FlightMapper {
                 results.add(f);
             }
         }
+        println(results.size() + " results found");
         return results;
     }
 
@@ -128,6 +208,7 @@ public class FlightMapper {
                 results.add(f);
             }
         }
+        println(results.size() + " results found");
         return results;
     }
 

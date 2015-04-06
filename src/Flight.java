@@ -11,7 +11,7 @@ public class Flight {
     private String carrier;
     private int flightNo;
     private String plane;
-    private int days;
+    private String days;
     private int stops;
     private String meal;
     private String notes;
@@ -26,7 +26,7 @@ public class Flight {
         carrier = info[5];
         flightNo = Integer.parseInt(info[6]);
         plane = info[7];
-        days = Integer.parseInt(info[8]);
+        days = info[8];
         stops = Integer.parseInt(info[9]);
         meal = info[10];
         notes = info[11];
@@ -76,7 +76,7 @@ public class Flight {
 
     public static class DaysComparator implements Comparator<Flight> {
         public int compare(Flight f1, Flight f2) {
-            return f1.getDays() - f2.getDays();
+            return f1.getDays().compareTo(f2.getDays());
         }
     }
 
@@ -124,7 +124,7 @@ public class Flight {
         return plane;
     }
 
-    public int getDays() {
+    public String getDays() {
         return days;
     }
 
@@ -138,5 +138,27 @@ public class Flight {
 
     public String getNotes() {
         return notes;
+    }
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        String NEWLINE = System.getProperty("line.separator");
+        s.append("[ Departs: " + source + NEWLINE
+                +"  Arrive: " + dest + NEWLINE
+                +"  Distance: " + miles + NEWLINE
+                +"  Leaves: " + leave + NEWLINE
+                +"  Reaches: " + arrive + NEWLINE
+                +"  Airline: " + carrier + NEWLINE
+                +"  Flight: " + flightNo + NEWLINE
+                +"  Plane: " + plane + NEWLINE
+                +"  Frequency: " + days + NEWLINE
+                +"  Stops: " + stops + NEWLINE
+                +"  Meal: " + meal + " ]" + NEWLINE );
+        return s.toString();
+    }
+
+    public static void main(String[] args) {
+        Flight test = new Flight("YYZ,YVR,1000,03:00,08:00,AC,123,320,Daily,0,Y,\"\"");
+        System.out.println(test.toString());
     }
 }
