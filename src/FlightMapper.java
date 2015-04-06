@@ -1,5 +1,7 @@
 import map.Reachable;
 import util.*;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.ArrayList;
 
@@ -15,7 +17,7 @@ public class FlightMapper {
     private static Digraph network;
     private static EdgeWeightedDigraph distanceNetwork;
 
-    public static void init() {
+    public static void init() throws IOException {
         // Creates a list of airports
         ArrayList<String> departures = input.readColumn(0);
         //println(departures);
@@ -46,11 +48,13 @@ public class FlightMapper {
         for (Integer i : idAirport.keys()) {
             airports.add(new Airport(i, idAirport.get(i)));
         }
+        println(airports.size() + " airports loaded");
 
         // Prepare a database of flights
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < input.countLines(); i++) {
             flights.add(new Flight(input.readLine(i)));
         }
+        println(flights.size() + " flights loaded");
 
         // Create a list of connections
         ArrayList<Tuple<String,String>> connections = input.parseTuple(0, 1);
@@ -341,7 +345,11 @@ public class FlightMapper {
     }
 
     public static void main(String[] args) {
-        init();
+        try {
+            init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         intro();
         int returnCode = -1;
         while(returnCode != 1) {

@@ -10,8 +10,13 @@ public class Time {
 
     public Time(String time) {
         String[] input = time.split(":");
-        hours = Integer.parseInt(input[0]);
-        minutes = Integer.parseInt(input[1]);
+        if (time.length() == 4) {
+            hours = Integer.parseInt(input[0]);
+            minutes = Integer.parseInt(input[1]);
+        } else {
+            hours = Integer.parseInt(input[0]);
+            minutes = Integer.parseInt(input[1].substring(0,1));
+        }
     }
 
     public int compareTo(Time t) {
