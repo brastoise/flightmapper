@@ -17,6 +17,9 @@ public class FlightMapper {
     private static Digraph network;
     private static EdgeWeightedDigraph distanceNetwork;
 
+    /**
+     * Initialises the application by loading data
+     */
     public static void init() throws IOException {
         // Creates a list of airports
         ArrayList<String> departures = input.readColumn(0);
@@ -68,8 +71,15 @@ public class FlightMapper {
         // Create a network with distances
         distanceNetwork = new EdgeWeightedDigraph(idAirport.size());
         for (Tuple<String,String> t : connections) {
-            // TODO
+        	// Find the flight
+        	Flight current;
+        	for (Flight f : flights) {
+        		if (f.getSource().equals(t.x) && f.getDest().equals(t.y)) current = f;
+        	}
+            DirectedEdge connection = new DirectedEdge(idAirport.getKey(t.x), idAirport.getKey(t.y), f.getMiles());
+            distanceNetwork.addEdge(connection);
         }
+        
     }
 
     public static void search() {
