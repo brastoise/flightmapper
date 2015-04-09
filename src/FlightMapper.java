@@ -1,3 +1,4 @@
+import map.DijkstraSP;
 import map.Reachable;
 import util.*;
 
@@ -9,8 +10,8 @@ import static util.StdOut.*;
 import static util.StdIn.*;
 
 public class FlightMapper {
-    private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
-    //private static ReadCSV input = new ReadCSV("data/Canada.csv");
+    //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
+    private static ReadCSV input = new ReadCSV("data/Canada.csv");
     private static HashMap<Integer, String> idAirport = new HashMap<Integer, String>(100);
     private static ArrayList<Airport> airports = new ArrayList<Airport>();
     private static ArrayList<Flight> flights = new ArrayList<Flight>();
@@ -55,7 +56,7 @@ public class FlightMapper {
 
         // Prepare a database of flights
         // int numberOfLines = input.countLines();
-        int numberOfLines = 1000;
+        int numberOfLines = 16;
         for (int i = 1; i < numberOfLines; i++) {
             flights.add(new Flight(input.readLine(i)));
         }
@@ -270,7 +271,7 @@ public class FlightMapper {
                 mapArrivals();
                 return 1;
             case '3':
-                // TODO
+                mapSP();
                 return 1;
             case '4':
                 // TODO
@@ -331,7 +332,33 @@ public class FlightMapper {
     }
 
     public static void mapSP() {
-
+        print("Input Departure: ");
+        String inputDep = readString();
+        println();
+        print("Input Arrival: ");
+        String inputArv = readString();
+        if (inputDep.length() == 3 & inputArv.length() == 3) {
+            int depID = idAirport.getKey(inputDep);
+            int arvID = idAirport.getKey(inputArv);
+            StringBuilder s = new StringBuilder();
+            map.DijkstraSP sp = new DijkstraSP(distanceNetwork, depID);
+            if (sp.hasPathTo(arvID)) {
+                println("Shortest distance: " + sp.distTo(arvID));
+                s.append(inputDep + " -> ");
+                for (DirectedEdge e : sp.pathTo(arvID)) {
+                    if (e.to() == arvID) {
+                        s.append(idAirport.get(e.to()));
+                    } else {
+                        s.append(idAirport.get(e.to()) + " -> ");
+                    }
+                }
+                println(s.toString());
+            } else {
+                println("No path found");
+            }
+        } else {
+            println("Input mismatch");
+        }
     }
 
     public static void mapReach() {
