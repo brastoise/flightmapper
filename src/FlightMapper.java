@@ -274,7 +274,7 @@ public class FlightMapper {
                 mapSP();
                 return 1;
             case '4':
-                // TODO
+                mapReach();
                 return 1;
             case '5':
                 return 0;
@@ -287,7 +287,7 @@ public class FlightMapper {
     public static void mapDepartures() {
         print("Input Airport: ");
         String inputAirport = readString();
-        if (inputAirport.length() == 3) {
+        if (inputAirport.length() == 3 && idAirport.containsVal(inputAirport)) {
             String airportCode = inputAirport;
             StringBuilder s = new StringBuilder();
             int airportID = idAirport.getKey(airportCode);
@@ -311,7 +311,7 @@ public class FlightMapper {
     public static void mapArrivals() {
         print("Input Airport: ");
         String inputAirport = readString();
-        if (inputAirport.length() == 3) {
+        if (inputAirport.length() == 3 && idAirport.containsVal(inputAirport)) {
             String airportCode = inputAirport;
             StringBuilder s = new StringBuilder();
             int airportID = idAirport.getKey(airportCode);
@@ -337,7 +337,7 @@ public class FlightMapper {
         println();
         print("Input Arrival: ");
         String inputArv = readString();
-        if (inputDep.length() == 3 & inputArv.length() == 3) {
+        if (inputDep.length() == 3 & inputArv.length() == 3 && idAirport.containsVal(inputDep) && idAirport.containsVal(inputArv)) {
             int depID = idAirport.getKey(inputDep);
             int arvID = idAirport.getKey(inputArv);
             StringBuilder s = new StringBuilder();
