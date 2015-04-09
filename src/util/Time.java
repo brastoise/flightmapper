@@ -49,20 +49,4 @@ public class Time {
         return hours + ":" + minutes;
     }
 
-    public static void main(String[] args) {
-        Time a = new Time("12:45");
-        Time b = new Time("12:30");
-        Time c = new Time("12:15");
-        Time d = new Time("12:00");
-        List<Time> sortTime = new ArrayList<Time>();
-        sortTime.add(a);
-        sortTime.add(b);
-        sortTime.add(c);
-        sortTime.add(d);
-        Collections.sort(sortTime, new TimeComparator());
-        for (Time t : sortTime) {
-            System.out.println(t.toString());
-        }
-
-    }
 }

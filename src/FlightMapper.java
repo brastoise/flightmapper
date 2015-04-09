@@ -9,8 +9,8 @@ import static util.StdOut.*;
 import static util.StdIn.*;
 
 public class FlightMapper {
-    //private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
-    private static ReadCSV input = new ReadCSV("data/Canada.csv");
+    private static ReadCSV input = new ReadCSV("data/StarAlliance.csv");
+    //private static ReadCSV input = new ReadCSV("data/Canada.csv");
     private static HashMap<Integer, String> idAirport = new HashMap<Integer, String>(100);
     private static ArrayList<Airport> airports = new ArrayList<Airport>();
     private static ArrayList<Flight> flights = new ArrayList<Flight>();
@@ -54,7 +54,9 @@ public class FlightMapper {
         println(airports.size() + " airports loaded");
 
         // Prepare a database of flights
-        for (int i = 1; i < input.countLines(); i++) {
+        // int numberOfLines = input.countLines();
+        int numberOfLines = 1000;
+        for (int i = 1; i < numberOfLines; i++) {
             flights.add(new Flight(input.readLine(i)));
         }
         println(flights.size() + " flights loaded");
@@ -72,11 +74,11 @@ public class FlightMapper {
         distanceNetwork = new EdgeWeightedDigraph(idAirport.size());
         for (Tuple<String,String> t : connections) {
         	// Find the flight
-        	Flight current;
+        	Flight current = null;
         	for (Flight f : flights) {
         		if (f.getSource().equals(t.x) && f.getDest().equals(t.y)) current = f;
         	}
-            DirectedEdge connection = new DirectedEdge(idAirport.getKey(t.x), idAirport.getKey(t.y), f.getMiles());
+            DirectedEdge connection = new DirectedEdge(idAirport.getKey(t.x), idAirport.getKey(t.y), current.getMiles());
             distanceNetwork.addEdge(connection);
         }
         
