@@ -74,12 +74,13 @@ public class FlightMapper {
         distanceNetwork = new EdgeWeightedDigraph(idAirport.size());
         for (Tuple<String,String> t : connections) {
         	// Find the flight
-        	Flight current = null;
         	for (Flight f : flights) {
-        		if (f.getSource().equals(t.x) && f.getDest().equals(t.y)) current = f;
+        		if (f.getSource().equals(t.x) && f.getDest().equals(t.y)) {
+                    DirectedEdge connection = new DirectedEdge(idAirport.getKey(t.x), idAirport.getKey(t.y), f.getMiles());
+                    distanceNetwork.addEdge(connection);
+                }
         	}
-            DirectedEdge connection = new DirectedEdge(idAirport.getKey(t.x), idAirport.getKey(t.y), current.getMiles());
-            distanceNetwork.addEdge(connection);
+
         }
         
     }
@@ -287,15 +288,19 @@ public class FlightMapper {
         String inputAirport = readString();
         if (inputAirport.length() == 3) {
             String airportCode = inputAirport;
+            StringBuilder s = new StringBuilder();
             int airportID = idAirport.getKey(airportCode);
-            Bag<Integer> source = new Bag<Integer>();
-            source.add(airportID);
-            Reachable search = new Reachable(network, source);
-            for (int v = 0; v < network.V(); v++) {
-                if (search.marked(v)) {
-                    print(idAirport.get(v) + " ");
+            Airport airport = airports.get(airportID);
+            ArrayList<String> seen = new ArrayList<String>();
+            for (String dep : airport.getDepartures()) {
+                if (!seen.contains(dep)) {
+                    s.append(dep + " ");
+                    seen.add(dep);
                 }
+
             }
+            s.append("\n");
+            print(s.toString());
             println();
         } else {
             println("Input mismatch");
@@ -307,10 +312,41 @@ public class FlightMapper {
         String inputAirport = readString();
         if (inputAirport.length() == 3) {
             String airportCode = inputAirport;
+            StringBuilder s = new StringBuilder();
             int airportID = idAirport.getKey(airportCode);
-            ArrayList<String> arrivals = airports.get(airportID).getArrivals();
-            for (String s : arrivals) {
-                println(s);
+            Airport airport = airports.get(airportID);
+            ArrayList<String> seen = new ArrayList<String>();
+            for (String arv : airport.getArrivals()) {
+                if (!seen.contains(arv)) {
+                    s.append(arv + " ");
+                    seen.add(arv);
+                }
+            }
+            s.append("\n");
+            print(s.toString());
+            println();
+        } else {
+            println("Input mismatch");
+        }
+    }
+
+    public static void mapSP() {
+
+    }
+
+    public static void mapReach() {
+        print("Input Airport: ");
+        String inputAirport = readString();
+        if (inputAirport.length() == 3) {
+            String airportCode = inputAirport;
+            int airportID = idAirport.getKey(airportCode);
+            Bag<Integer> source = new Bag<Integer>();
+            source.add(airportID);
+            Reachable search = new Reachable(network, source);
+            for (int v = 0; v < network.V(); v++) {
+                if (search.marked(v)) {
+                    print(idAirport.get(v) + " ");
+                }
             }
             println();
         } else {
